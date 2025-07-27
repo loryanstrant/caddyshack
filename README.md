@@ -258,6 +258,8 @@ networks:
 
 This project uses GitHub Actions to automatically build and publish Docker images to GitHub Container Registry (GHCR).
 
+> **Note**: Every push to the main branch automatically triggers a new Docker build and publishes the latest image to GHCR.
+
 ### Automatic Builds
 
 - **Push to main/master**: Creates `latest` and `main` tags
