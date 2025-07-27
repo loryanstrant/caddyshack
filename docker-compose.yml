@@ -14,15 +14,11 @@ services:
       - CADDY_ADMIN_ENDPOINT=${CADDY_ADMIN_ENDPOINT:-http://host.docker.internal:2019}
     volumes:
       - ${CADDYFILE_LOCATION:-./Caddyfile}:/caddy/Caddyfile
-      - caddyfile_backups:/app/backups
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
       - caddyshack-network
-
-volumes:
-  caddyfile_backups:
 
 networks:
   caddyshack-network:

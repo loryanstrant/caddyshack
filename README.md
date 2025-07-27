@@ -76,7 +76,6 @@ docker run -d \
   -e TZ=America/New_York \
   -e CADDY_ADMIN_ENDPOINT=http://host.docker.internal:2019 \
   -v ./Caddyfile:/caddy/Caddyfile \
-  -v caddyfile_backups:/app/backups \
   --add-host host.docker.internal:host-gateway \
   ghcr.io/loryanstrant/caddyshack:latest
 ```
@@ -121,13 +120,14 @@ docker build -t caddyshack-ui .
 
 The `docker-compose.yml` file includes:
 - **caddyshack-ui**: The web interface container
-- **Volume mounts**: For Caddyfile access and backup storage
+- **Volume mounts**: For Caddyfile access (backups are stored alongside the Caddyfile)
 - **Network**: Bridge network for container communication
 
 ## How It Works 🔧
 
 ### Backup System
 - **Automatic backups** are created before any Caddyfile modifications
+- **Storage location**: Backups are stored in a "backups" subfolder relative to the Caddyfile location
 - **Timestamp format**: `Caddyfile.backup.YYYY-MM-DD_HH-MM-SS`
 - **Version numbering**: Multiple edits on the same day get version numbers (v1, v2, etc.)
 - **Example**: `Caddyfile.backup.2025-01-15_14-30-45_v2`
@@ -234,7 +234,6 @@ services:
       - CADDY_ADMIN_ENDPOINT=http://caddy-server:2019
     volumes:
       - ./Caddyfile:/caddy/Caddyfile:ro
-      - caddyfile_backups:/app/backups
     networks:
       - caddy-network
     depends_on:
@@ -245,9 +244,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
-
-volumes:
-  caddyfile_backups:
 
 networks:
   caddy-network:
@@ -301,8 +297,8 @@ The interface includes various quotes and references from the 1980 movie "Caddys
    - Ensure firewall allows connections on port 2019
 
 2. **Backup creation fails**
-   - Check file permissions on the Caddyfile location
-   - Ensure the backup volume has write permissions
+   - Check file permissions on the Caddyfile location and its parent directory
+   - Ensure the directory containing the Caddyfile has write permissions for backup creation
 
 3. **Configuration reload fails**
    - Verify Caddyfile syntax is valid

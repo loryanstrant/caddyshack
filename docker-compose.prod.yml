@@ -14,7 +14,6 @@ services:
       - CADDY_ADMIN_ENDPOINT=${CADDY_ADMIN_ENDPOINT:-http://host.docker.internal:2019}
     volumes:
       - ${CADDYFILE_LOCATION:-./Caddyfile}:/caddy/Caddyfile:ro
-      - caddyfile_backups:/app/backups
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -28,10 +27,6 @@ services:
     labels:
       - "com.docker.compose.project=caddyshack"
       - "com.docker.compose.service=caddyshack-ui"
-
-volumes:
-  caddyfile_backups:
-    driver: local
 
 networks:
   caddyshack-network:
