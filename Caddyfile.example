@@ -1,0 +1,24 @@
+# Example Caddyfile for testing
+# This is a sample configuration - replace with your actual Caddyfile
+
+# Simple reverse proxy example
+example.com {
+    reverse_proxy localhost:3000
+}
+
+# API endpoint
+api.example.com {
+    reverse_proxy /api/* localhost:8080
+    reverse_proxy /* localhost:3000
+}
+
+# Static file server
+static.example.com {
+    root * /var/www/html
+    file_server
+}
+
+# HTTPS redirect
+http://example.com {
+    redir https://example.com{uri}
+}
