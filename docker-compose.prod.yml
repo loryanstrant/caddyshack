@@ -1,11 +1,11 @@
+# Docker compose for production deployment
 version: '3.8'
 
 services:
   caddyshack-ui:
     image: ghcr.io/loryanstrant/caddyshack:latest
-    # Uncomment the line below and comment the image line above to build locally
-    # build: .
-    container_name: caddyshack-ui
+    container_name: caddyshack-ui-prod
+    restart: unless-stopped
     ports:
       - "${CADDYSHACK_PORT:-8080}:3000"
     environment:
@@ -13,16 +13,25 @@ services:
       - CADDYFILE_PATH=/caddy/Caddyfile
       - CADDY_ADMIN_ENDPOINT=${CADDY_ADMIN_ENDPOINT:-http://host.docker.internal:2019}
     volumes:
-      - ${CADDYFILE_LOCATION:-./Caddyfile}:/caddy/Caddyfile
+      - ${CADDYFILE_LOCATION:-./Caddyfile}:/caddy/Caddyfile:ro
       - caddyfile_backups:/app/backups
-    restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
       - caddyshack-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    labels:
+      - "com.docker.compose.project=caddyshack"
+      - "com.docker.compose.service=caddyshack-ui"
 
 volumes:
   caddyfile_backups:
+    driver: local
 
 networks:
   caddyshack-network:
