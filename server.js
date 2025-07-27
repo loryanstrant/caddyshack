@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 const CADDYFILE_PATH = process.env.CADDYFILE_PATH || '/caddy/Caddyfile';
 const CADDY_ADMIN_ENDPOINT = process.env.CADDY_ADMIN_ENDPOINT || 'http://host.docker.internal:2019';
 const TIMEZONE = process.env.TZ || 'UTC';
-const BACKUPS_DIR = '/app/backups';
+const BACKUPS_DIR = path.join(path.dirname(CADDYFILE_PATH), 'backups');
 
 // Middleware
 app.use(express.json());
